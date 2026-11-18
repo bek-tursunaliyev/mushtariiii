@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hokimiyat barabani — Savol o‘yini</title>
+<style>
+:root{--bg:#f4f1ea;--card:#fff;--ink:#16203a;--mute:#5d6682;--line:#e1dccf;--gold:#b8860b;--ok:#1f9d6b;--bad:#d64545;--sh:0 10px 30px rgba(22,32,58,.12);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1226;--card:#161d38;--ink:#eef0f8;--mute:#9aa3c2;--line:#27305a;--gold:#e8b94a;--sh:0 10px 30px rgba(0,0,0,.45)}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Georgia,serif;min-height:100vh;
+background-image:radial-gradient(circle at 10% 0%,rgba(47,111,237,.15),transparent 40%),radial-gradient(circle at 95% 15%,rgba(217,130,43,.15),transparent 40%),radial-gradient(circle at 50% 100%,rgba(31,157,107,.14),transparent 45%)}
+.wrap{max-width:640px;margin:0 auto;padding:18px 16px 36px;text-align:center}
+.tag{font:700 11px system-ui,sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold)}
+h1{font-size:clamp(24px,6vw,34px);margin:4px 0 12px}
+.hud{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;font:600 13px system-ui,sans-serif}
+.hud div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;box-shadow:var(--sh)}
+.hud b{font:700 18px Georgia,serif;color:var(--gold);display:block}
+.legend{display:flex;gap:12px;justify-content:center;font:12px system-ui,sans-serif;color:var(--mute);margin-bottom:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.stage{position:relative;width:min(88vw,380px);aspect-ratio:1;margin:6px auto 14px}
+.stage canvas{width:100%;height:100%;border-radius:50%;box-shadow:0 0 0 8px var(--gold),0 0 0 11px var(--card),var(--sh);transition:transform 4.6s cubic-bezier(.12,.7,.05,1)}
+.ptr{position:absolute;left:50%;top:-16px;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:30px solid var(--gold);filter:drop-shadow(0 3px 2px rgba(0,0,0,.35));z-index:2}
+.hub{position:absolute;left:50%;top:50%;width:21%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:var(--card);border:4px solid var(--gold);display:grid;place-items:center;font-size:26px;z-index:1}
+.btn{padding:14px 28px;border:0;border-radius:16px;background:var(--gold);color:#16203a;font:800 16px system-ui,sans-serif;cursor:pointer;box-shadow:var(--sh);letter-spacing:.5px}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.dark{background:var(--ink);color:var(--bg)}
+.hint{color:var(--mute);font:14px system-ui,sans-serif;margin-top:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:var(--sh);text-align:left;animation:in .4s}
+@keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.top{display:flex;justify-content:space-between;align-items:center;font:700 12px system-ui,sans-serif;margin-bottom:8px}
+.pill{padding:4px 11px;border-radius:20px;color:#fff;letter-spacing:.8px}
+.pts{color:var(--gold);font-size:15px}
+.q{font-size:clamp(17px,3.8vw,21px);line-height:1.45;margin:6px 0 14px}
+.opts{display:grid;gap:9px}
+.o{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;padding:12px 13px;border-radius:13px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:500 15px/1.4 system-ui,sans-serif;cursor:pointer;transition:.15s}
+.o:hover:not(:disabled){border-color:var(--gold);transform:translateX(4px)}
+.o .l{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:700 12px system-ui,sans-serif;background:var(--card);border:1px solid var(--line)}
+.o.ok{border-color:var(--ok);background:rgba(31,157,107,.15)}.o.bad{border-color:var(--bad);background:rgba(214,69,69,.13);animation:sh .35s}.o.gone{opacity:.18;pointer-events:none}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.life{display:flex;gap:8px;margin-top:12px}
+.life button{flex:1;padding:9px;border-radius:12px;border:1.5px dashed var(--gold);background:transparent;color:var(--ink);font:600 13px system-ui,sans-serif;cursor:pointer}
+.life button:disabled{opacity:.35;cursor:default}
+.fb{display:none;margin-top:14px;padding:13px;border-radius:13px;background:var(--bg);border-left:4px solid var(--gold);font:14.5px/1.5 system-ui,sans-serif}
+.fb.show{display:block;animation:in .3s}
+.big{font-size:60px;font-weight:700;color:var(--gold);margin:4px 0}
+.pop{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);font:800 40px system-ui,sans-serif;pointer-events:none;animation:up 1.2s forwards;z-index:9;text-shadow:0 2px 12px rgba(0,0,0,.3)}
+@keyframes up{to{opacity:0;transform:translate(-50%,-130%)}}
+.hid{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">18-mavzu · Hokimiyatlar bo‘linishi</span>
+  <h1>🎡 Hokimiyat barabani</h1>
+  <div class="hud">
+    <div>Ball<b id="sc">0</b></div><div>Qolgan sektor<b id="left">10</b></div><div>Ketma-ket<b id="st">0</b></div>
+  </div>
+  <div id="wheelView">
+    <div class="legend"><span><i style="background:#2f6fed"></i>Qonun chiqaruvchi</span><span><i style="background:#d9822b"></i>Ijro</span><span><i style="background:#1f9d6b"></i>Sud</span></div>
+    <div class="stage"><div class="ptr"></div><canvas id="cv" width="760" height="760"></canvas><div class="hub">⚖️</div></div>
+    <button class="btn" id="spin">BARABANNI AYLANTIR!</button>
+    <p class="hint" id="hint">Baraban qaysi sektorda to‘xtasa, o‘sha savolga javob berasiz. To‘g‘ri javob — ball, xato — ballning yarmi ketadi.</p>
+  </div>
+  <div id="quizView" class="hid"></div>
+</div>
+
+<script>
+var S=[
+{b:'i',p:100,t:'Prezident qonunga veto qo‘ydi, lekin parlament uni qabul qiluvchilarning 2/3 ovozi bilan yengib o‘tdi. Bu nimani ko‘rsatadi?',o:['Hokimiyatlar o‘rtasida o‘zaro tiyib turish ikki tomonlama ekanini','Prezident hokimiyati cheksizligini','Sudning parlamentdan ustunligini','Hokimiyatlar bo‘linishi bekor qilinganini'],a:0,e:'Veto — ijroning vositasi, uni yengish — parlamentning javobi. Tiyib turish bir tomonlama emas, ikki tomonlama ishlaydi.'},
+{b:'q',p:200,t:'“Qonunlar ruhi haqida” asarida hokimiyatlar bo‘linishi nazariyasini mukammal bayon etgan mutafakkir kim?',o:['Tomas Gobbs','Jan-Jak Russo','Sharl Lui Montesk‘ye','Nikkolo Makiavelli'],a:2,e:'Montesk‘ye (1748) Lokk g‘oyalarini rivojlantirib, uch hokimiyatni bir-biridan ajratishni erkinlik kafolati deb hisobladi.'},
+{b:'q',p:300,t:'Parlament Hukumatga ishonchsizlik bildirdi. Bu holatda nima yuz beradi?',o:['Parlament tarqatib yuboriladi, sud aralashadi','Hukumat javobgarlikka tortiladi yoki iste’foga chiqadi — qonun chiqaruvchi ijroni tiyib turadi','Hech narsa, bu faqat ramziy','Sud darhol yangi hukumat tuzadi'],a:1,e:'Ishonchsizlik votumi — parlament nazoratining eng og‘ir vositalaridan biri (parlament shaklidagi boshqaruvda ayniqsa).'},
+{b:'s',p:300,t:'Sudya ishni ko‘rayotganda “yuqoridan” qo‘ng‘iroq bo‘lib, “hukm shunday bo‘lsin” deyildi. Qaysi tamoyil buzildi?',o:['Sud mustaqilligi va faqat qonunga bo‘ysunish','Parlament suvereniteti','Federalizm','Ommaviy oshkoralik'],a:0,e:'Sudya faqat qonun va vijdoniga bo‘ysunadi. Har qanday aralashuv — sud hokimiyatining mustaqilligiga tahdid.'},
+{b:'i',p:400,t:'Ijro hokimiyati farmon va qarorlar chiqara oladimi? Bu bo‘linish tamoyiliga zid emasmi?',o:['Zid, faqat parlament hujjat chiqaradi','Zid emas, lekin ular qonunga asoslanishi va unga zid bo‘lmasligi shart','Zid emas, ular qonundan ustun turadi','Faqat sud ruxsati bilan'],a:1,e:'Qonun osti hujjatlar qonunni ijro etish uchun chiqariladi. Ular qonunga zid bo‘lsa, sud yoki konstitutsiyaviy nazorat orqali bekor qilinishi mumkin.'},
+{b:'s',p:200,t:'“Kim qo‘riqchining o‘zini qo‘riqlaydi?” Sud hokimiyati ham nazoratsiz qolmasligi uchun qaysi vosita xizmat qiladi?',o:['Sudyalar hech kimga javobgar emas','Apellyatsiya-kassatsiya instansiyalari, qonunga bog‘liqlik va intizomiy javobgarlik','Faqat Prezident farmoni','Ommaviy ovoz berish'],a:1,e:'Yuqori instansiya sudlar quyi sudlarni tekshiradi, sudyalar esa qonun va odob qoidalari bilan chegaralangan.'},
+{b:'i',p:500,t:'Prezident sud hukmi bilan mahkum etilgan shaxsni afv etdi. Bu qaysi mexanizmga yaqin?',o:['Sudning ijroni tiyishiga','Ijro hokimiyatining sud natijalariga ta’siriga (afv institutiga)','Parlamentning veto huquqiga','Konstitutsiyaviy referendumga'],a:1,e:'Afv — ijro rahbarining sud hukmi oqibatlarini yumshatish vakolati; shu bilan u sud hukmini ma’lum darajada muvozanatlaydi.'},
+{b:'q',p:400,t:'Parlament sud hokimiyatiga qanday qonuniy ta’sir ko‘rsatishi mumkin?',o:['Sudyalarga to‘g‘ridan-to‘g‘ri hukm aytib turish orqali','Sud tizimi va tartibini qonun bilan belgilash hamda sudyalarni tayinlashda ishtirok etish orqali','Sudni tarqatib yuborish orqali','Hech qanday usul bilan'],a:1,e:'Parlament sud tizimini qonun bilan tashkil etadi va ko‘p mamlakatlarda sudya nomzodlarini tasdiqlaydi, lekin ishlar bo‘yicha qarorga aralashmaydi.'},
+{b:'s',p:100,t:'“Qonun oldida hamma teng” — bu tamoyilni amalda eng ko‘p qaysi hokimiyat ta’minlaydi?',o:['Qonun chiqaruvchi','Ijro etuvchi','Sud hokimiyati','Matbuot'],a:2,e:'Sud — bahslarni hal qiluvchi va huquq buzilsa tiklovchi organ. Aynan shu bois uning mustaqilligi eng muhim kafolatdir.'},
+{b:'s',p:500,t:'Futbol misoli: qoidalarni yozuvchi — parlament, maydonda o‘ynovchi — ijro. Unda “hakam” kim?',o:['Prezident','Sud hokimiyati — qoida buzilganini xolis hal qiladi','Parlament spikeri','Tomoshabinlar'],a:1,e:'Agar hakam bir jamoaga yon bossa, o‘yin adolatsiz bo‘ladi. Xuddi shu kabi, sud mustaqil bo‘lmasa, hokimiyatlar muvozanati buziladi.'}
+];
+var COL={q:'#2f6fed',i:'#d9822b',s:'#1f9d6b'},NM={q:'QONUN CHIQARUVCHI',i:'IJRO',s:'SUD'};
+var N=S.length,SEG=360/N,rot=0,score=0,streak=0,done=[],cur=-1,busy=false,l50=true,lhint=true,cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+function $(id){return document.getElementById(id)}
+function draw(){
+ var W=cv.width,c=W/2,R=c-6;ctx.clearRect(0,0,W,W);
+ for(var k=0;k<N;k++){
+  var a0=(-90+k*SEG)*Math.PI/180,a1=(-90+(k+1)*SEG)*Math.PI/180;
+  ctx.beginPath();ctx.moveTo(c,c);ctx.arc(c,c,R,a0,a1);ctx.closePath();
+  ctx.fillStyle=done[k]?'#7a8095':COL[S[k].b];ctx.fill();
+  ctx.lineWidth=4;ctx.strokeStyle='rgba(255,255,255,.85)';ctx.stroke();
+  ctx.save();ctx.translate(c,c);ctx.rotate((a0+a1)/2);ctx.textAlign='right';ctx.fillStyle='#fff';
+  ctx.font='bold 54px Georgia,serif';ctx.fillText(done[k]?'✓':(k+1),R-30,-2);
+  ctx.font='bold 30px system-ui,sans-serif';ctx.fillText(done[k]?'':S[k].p,R-30,36);ctx.restore();
+ }
+}
+function hud(){$('sc').textContent=score;$('st').textContent=streak;$('left').textContent=left()}
+function left(){var n=0;for(var k=0;k<N;k++)if(!done[k])n++;return n}
+function spin(){
+ if(busy)return;var av=[];for(var k=0;k<N;k++)if(!done[k])av.push(k);
+ if(!av.length)return;busy=true;$('spin').disabled=true;
+ cur=av[Math.floor(Math.random()*av.length)];
+ var jit=(Math.random()-.5)*SEG*.7,target=((360-(cur+.5)*SEG+jit)%360+360)%360,
+ delta=360*6+(((target-rot%360)%360)+360)%360;
+ rot+=delta;cv.style.transform='rotate('+rot+'deg)';
+ setTimeout(ask,4800);
+}
+function ask(){
+ var q=S[cur];l50used=false;
+ $('wheelView').classList.add('hid');var v=$('quizView');v.classList.remove('hid');
+ var h='<div class="card"><div class="top"><span class="pill" style="background:'+COL[q.b]+'">'+NM[q.b]+' · SEKTOR '+(cur+1)+'</span><span class="pts">'+q.p+' ball</span></div><p class="q">'+q.t+'</p><div class="opts">';
+ q.o.forEach(function(t,n){h+='<button class="o" data-n="'+n+'"><span class="l">'+'ABCD'[n]+'</span><span>'+t+'</span></button>'});
+ h+='</div><div class="life"><button id="b50"'+(l50?'':' disabled')+'>✂️ 50/50</button><button id="bh"'+(lhint?'':' disabled')+'>💡 Ishora</button></div><div class="fb" id="fb"></div><div style="text-align:center"><button class="btn dark hid" id="nx" style="margin-top:14px">Barabanga qaytish →</button></div></div>';
+ v.innerHTML=h;
+ v.querySelectorAll('.o').forEach(function(b){b.onclick=function(){pick(+b.dataset.n)}});
+ $('b50').onclick=function(){l50=false;this.disabled=true;var w=[];q.o.forEach(function(_,n){if(n!==q.a)w.push(n)});w.sort(function(){return Math.random()-.5});
+  v.querySelectorAll('.o').forEach(function(b){var n=+b.dataset.n;if(n===w[0]||n===w[1])b.classList.add('gone')})};
+ $('bh').onclick=function(){lhint=false;this.disabled=true;var f=$('fb');f.innerHTML='💡 <b>Ishora:</b> '+HINTS[cur];f.classList.add('show')};
+}
+var HINTS=['Zarba va javob zarbasi: yo‘l ikki tomonga ochiq.','Bordo yaqinidagi baron, XVIII asr fransuz ma’rifatparvari.','Ishonch yo‘qolsa, kursi ham ketadi.','Sudya faqat qonunga quloq soladi, telefon qo‘ng‘iroqlariga emas.','Ijrochi qonun yo‘lidan chiqib keta olmaydi.','Yuqori instansiya quyisini tekshiradi: sudyaning ham javobgarligi bor.','Hukmni sud chiqaradi, yengillikni esa ijro rahbari beradi.','Parlament sud tizimining “qurilishini” belgilaydi, ish ichiga aralashmaydi.','Nizoni hal qiladigan, adolat tarozisining sohibi.','Hakam o‘yin tashqarisida va xolis turadi.'];
+function pick(n){
+ var q=S[cur],ok=n===q.a,v=$('quizView');
+ v.querySelectorAll('.o').forEach(function(b,k){b.disabled=true;b.style.pointerEvents='none';if(k===q.a)b.classList.add('ok');else if(k===n)b.classList.add('bad')});
+ var d;if(ok){streak++;d=q.p+(streak>=3?100:0);score+=d}else{streak=0;d=-Math.floor(q.p/2);score=Math.max(0,score+d)}
+ done[cur]=true;
+ var f=$('fb');f.innerHTML='<b>'+(ok?'✅ To‘g‘ri! +'+d+' ball'+(streak>=3?' (seriya bonusi 🔥)':''):'❌ Xato. '+d+' ball')+'</b><br>'+q.e;f.classList.add('show');
+ pop((d>0?'+':'')+d,ok);hud();var nx=$('nx');nx.classList.remove('hid');nx.textContent=left()?'Barabanga qaytish →':'Natijani ko‘rish →';nx.onclick=back;
+}
+function pop(t,ok){var e=document.createElement('div');e.className='pop';e.textContent=t;e.style.color=ok?'#1f9d6b':'#d64545';document.body.appendChild(e);setTimeout(function(){e.remove()},1300)}
+function back(){
+ $('quizView').classList.add('hid');
+ if(!left())return fin();
+ $('wheelView').classList.remove('hid');draw();busy=false;$('spin').disabled=false;
+}
+function fin(){
+ var max=0;S.forEach(function(x){max+=x.p});
+ var r=score>=max*.8?['🏆','Konstitutsiyaviy donishmand']:score>=max*.5?['⚖️','Muvozanat ustasi']:score>=max*.25?['📘','Tajribali talaba']:['🌱','Boshlovchi'];
+ var v=$('quizView');v.classList.remove('hid');
+ v.innerHTML='<div class="card" style="text-align:center"><div style="font-size:52px">'+r[0]+'</div><div class="big">'+score+'</div><p style="font:15px system-ui,sans-serif;color:var(--mute)">'+max+' balldan (qo‘lga kiritilgan)</p><h2 style="margin:6px 0 14px">'+r[1]+'</h2><button class="btn" id="rs">Qayta o‘ynash ↺</button></div>';
+ $('rs').onclick=function(){done=[];score=0;streak=0;l50=true;lhint=true;v.classList.add('hid');$('wheelView').classList.remove('hid');draw();hud();busy=false;$('spin').disabled=false};
+}
+$('spin').onclick=spin;draw();hud();
+</script>
+</body>
+</html>
